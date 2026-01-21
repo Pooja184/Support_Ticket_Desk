@@ -12,7 +12,7 @@ cloudinary.config({
 export const uploadToCloudinary = async (filePath) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: "ticket/products", // change to your own folder
+      folder: "ticket/tickets", // change to your own folder
     });
 
     return {
