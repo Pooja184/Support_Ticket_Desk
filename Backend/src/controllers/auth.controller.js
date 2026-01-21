@@ -115,3 +115,33 @@ export const login = async (req, res) => {
      res.status(500).json({success:false,message:error.message})
   }
 };
+
+export const getCurrentUser=async(req,res)=>{
+  try {
+    const userId=req.userId;
+
+    const isUserExist=await User.findById(userId);
+    if(!isUserExist){
+      return res.status(400).json({
+        success:false,
+        message:"User doesn't exist"
+      })
+    }
+
+    return res.status(201).json({
+      success:true,
+      message:"User Profile",
+      user:{
+        name:isUserExist.name,
+        email:isUserExist.email,
+      }
+    })
+  } catch (error) {
+      console.error("Logout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error during logout",
+    });
+  
+  }
+}
