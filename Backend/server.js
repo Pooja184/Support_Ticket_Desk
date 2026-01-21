@@ -1,12 +1,28 @@
-import express from 'express'
+import express from "express";
+import connectDB from "./src/config/mongoDB.js";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import cors from 'cors'
 
-const app=express();
+dotenv.config();
+const app = express();
+connectDB();
 
-app.use(express.json())
+const corsOptions = {
+  origin: true,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+};
 
-app.get('/',(req,res)=>{
-    res.send("Api working....")
-    console.log("api working")
-})
+app.use(cors(corsOptions));
 
-app.listen(3000,()=>console.log(`server listening`))
+app.use(express.json());
+app.use(cookieParser());
+
+app.get("/", (req, res) => {
+  res.send("Api working....");
+});
+
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+
+app.listen(port, () => console.log(`server listening`));
