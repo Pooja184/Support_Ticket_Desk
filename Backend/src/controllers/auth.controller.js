@@ -64,3 +64,54 @@ export const register = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All Fields are required" });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User doesn't exist! please register.",
+      });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid Password",
+      });
+    }
+
+    const token = tokenGenerator(user._id.toString());
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: {
+        name: user.name,
+        password: user.password,
+      },
+    });
+  } catch (error) {
+     res.status(500).json({success:false,message:error.message})
+  }
+};
