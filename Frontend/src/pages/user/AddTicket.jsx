@@ -50,7 +50,7 @@ const AddTicket = () => {
       }
 
       toast.success("Ticket created successfully");
-      navigate("/my-tickets");
+      navigate("/dashboard/my-tickets");
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to create ticket"
