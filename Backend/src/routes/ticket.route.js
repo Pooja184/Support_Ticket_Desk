@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addTicket, addTicketAttachment } from "../controllers/ticket.controller.js";
+import { addTicket, addTicketAttachment, getMyTickets } from "../controllers/ticket.controller.js";
 import { tokenDecoder } from "../middlewares/tokenDecoder.js";
 import { upload } from "../config/multer.js";
 
@@ -12,4 +12,6 @@ ticketRouter.post(
   upload.single("file"),
   addTicketAttachment,
 );
+
+ticketRouter.get("/my-tickets",tokenDecoder,getMyTickets)
 export default ticketRouter;
