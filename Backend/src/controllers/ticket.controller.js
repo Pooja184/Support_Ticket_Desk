@@ -100,3 +100,27 @@ export const addTicketAttachment = async (req, res) => {
   }
 };
 
+
+export const getMyTickets = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const tickets = await Ticket.find({ created_by: userId })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: tickets,
+    });
+  } catch (error) {
+    console.error("Get My Tickets Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
+
