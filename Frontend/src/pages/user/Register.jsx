@@ -110,6 +110,15 @@ function Register() {
             Login
           </span>
         </p>
+         <p className="text-sm text-center text-gray-700 mt-6">
+          Redirect to welcome page{" "}
+          <span
+            onClick={() => navigate("/")}
+            className="text-black font-medium cursor-pointer hover:underline"
+          >
+            Welcome
+          </span>
+        </p>
       </div>
     </div>
   );
