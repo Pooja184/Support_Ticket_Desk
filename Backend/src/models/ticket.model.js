@@ -11,25 +11,24 @@ const ticketSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      trim: true,
     },
 
     category: {
       type: String,
-      enum: ["Bug", "Feature", "Support", "Other"],
-      required: true,
+      enum: ["bug", "feature", "support", "other"],
+      default: "support",
     },
 
     priority: {
       type: String,
-      enum: ["Low", "Medium", "High"],
-      default: "Medium",
+      enum: ["low", "medium", "high"],
+      default: "medium",
     },
 
     status: {
       type: String,
-      enum: ["Open", "In Progress", "Resolved", "Closed"],
-      default: "Open",
+      enum: ["open", "in_progress", "resolved", "closed"],
+      default: "open",
     },
 
     created_by: {
@@ -43,12 +42,17 @@ const ticketSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+
+    attachments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TicketAttachment",
+      },
+    ],
   },
-  {
-    timestamps: true, // creates createdAt & updatedAt
-  }
+  { timestamps: true }
 );
 
-const Ticket =mongoose.models.Ticket || mongoose.model("Ticket", ticketSchema);
+const Ticket = mongoose.models.Ticket || mongoose.model("Ticket", ticketSchema);
 
 export default Ticket;
