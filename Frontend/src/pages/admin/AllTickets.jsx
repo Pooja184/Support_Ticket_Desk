@@ -5,7 +5,10 @@ const AllTickets = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //  Filters state
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 5;
+
   const [filters, setFilters] = useState({
     status: "",
     category: "",
@@ -24,14 +27,21 @@ const AllTickets = () => {
     try {
       setLoading(true);
 
-      const params = {};
+      // include page & limit
+      const params = {
+        page,
+        limit,
+      };
+
       if (filters.status) params.status = filters.status;
       if (filters.category) params.category = filters.category;
       if (filters.priority) params.priority = filters.priority;
       if (filters.search) params.search = filters.search;
 
       const res = await api.get("/ticket/all-tickets", { params });
+
       setTickets(res.data.data);
+      setTotalPages(res.data.pagination.totalPages); 
     } catch (error) {
       console.error("Failed to fetch tickets", error);
     } finally {
@@ -46,24 +56,27 @@ const AllTickets = () => {
       });
       fetchAllTickets();
     } catch (error) {
-      alert(
-        error.response?.data?.message || "Failed to update status"
-      );
+      alert(error.response?.data?.message || "Failed to update status");
     }
   };
 
+  // this effect reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
+  // this effect fetch on page or filter change
   useEffect(() => {
     fetchAllTickets();
-  }, [filters]);
+  }, [filters, page]);
 
   if (loading) return <p>Loading tickets...</p>;
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">
-        All Tickets
-      </h2>
+      <h2 className="text-xl font-semibold mb-4">All Tickets</h2>
 
+      {/*  Filters */}
       <div className="flex flex-wrap gap-3 mb-4">
         <input
           type="text"
@@ -116,7 +129,7 @@ const AllTickets = () => {
         </select>
       </div>
 
-      {/* Tickets Table */}
+      {/* Table  here we can also use grid as its easy to make page responsive*/}
       <div className="overflow-x-auto border rounded">
         <table className="w-full border-collapse text-sm">
           <thead className="bg-gray-100">
@@ -132,35 +145,23 @@ const AllTickets = () => {
 
           <tbody>
             {tickets.map((ticket) => (
-              <tr key={ticket._id} className="hover:bg-gray-50">
-                <td className="border px-3 py-2">
-                  {ticket.title}
-                </td>
-
-                <td className="border px-3 py-2 text-center">
-                  {ticket.category}
-                </td>
-
-                <td className="border px-3 py-2 text-center">
-                  {ticket.priority}
-                </td>
+              <tr key={ticket._id}>
+                <td className="border px-3 py-2">{ticket.title}</td>
+                <td className="border px-3 py-2 text-center">{ticket.category}</td>
+                <td className="border px-3 py-2 text-center">{ticket.priority}</td>
 
                 <td className="border px-3 py-2 text-center">
                   <select
                     value={ticket.status}
                     disabled={ticket.status === "Closed"}
                     onChange={(e) =>
-                      handleStatusChange(
-                        ticket._id,
-                        e.target.value
-                      )
+                      handleStatusChange(ticket._id, e.target.value)
                     }
                     className="border rounded px-2 py-1"
                   >
                     <option value={ticket.status}>
                       {ticket.status.replace("_", " ")}
                     </option>
-
                     {STATUS_OPTIONS[ticket.status]?.map((next) => (
                       <option key={next} value={next}>
                         {next.replace("_", " ")}
@@ -180,12 +181,29 @@ const AllTickets = () => {
             ))}
           </tbody>
         </table>
+      </div>
 
-        {tickets.length === 0 && (
-          <p className="text-center text-gray-500 py-4">
-            No tickets found
-          </p>
-        )}
+      {/* Pagination UI */}
+      <div className="flex justify-center gap-3 mt-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+
+        <span className="text-sm">
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -210,10 +210,16 @@ export const getTicketById = async (req, res) => {
 
 
 
-
 export const getAllTickets = async (req, res) => {
   try {
-    const { status, category, priority, search } = req.query;
+    const {
+      status,
+      category,
+      priority,
+      search,
+      page = 1,
+      limit = 10,
+    } = req.query;
 
     const query = {};
 
@@ -225,14 +231,27 @@ export const getAllTickets = async (req, res) => {
       query.title = { $regex: search, $options: "i" };
     }
 
-    const tickets = await Ticket.find(query)
-      .populate("created_by", "name email")
-      .populate("assigned_to", "name email")
-      .sort({ createdAt: -1 });
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [tickets, total] = await Promise.all([
+      Ticket.find(query)
+        .populate("created_by", "name email")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit)),
+
+      Ticket.countDocuments(query),
+    ]);
 
     res.status(200).json({
       success: true,
       data: tickets,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     console.error("Get All Tickets Error:", error);
@@ -242,6 +261,7 @@ export const getAllTickets = async (req, res) => {
     });
   }
 };
+
 
 
 
