@@ -1,6 +1,7 @@
 import Ticket from "../models/ticket.model.js";
 import TicketAttachment from "../models/ticketAttachment.js";
 import cloudinary from "../config/cloudinary.js";
+import TicketComment from "../models/ticketComment.model.js";
 
 export const addTicket = async (req, res) => {
   try {
@@ -123,4 +124,56 @@ export const getMyTickets = async (req, res) => {
 
 
 
+export const addComment = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { id: ticketId } = req.params;
+    const { comment } = req.body;
+
+    if (!comment) {
+      return res.status(400).json({
+        success: false,
+        message: "Comment is required",
+      });
+    }
+
+    const newComment = await TicketComment.create({
+      ticket_id: ticketId,
+      comment,
+      created_by: userId,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: newComment,
+    });
+  } catch (error) {
+    console.error("Add Comment Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const getComments = async (req, res) => {
+  try {
+    const { id: ticketId } = req.params;
+
+    const comments = await TicketComment.find({ ticket_id: ticketId })
+      .populate("created_by", "name email")
+      .sort({ createdAt: 1 });
+
+    res.status(200).json({
+      success: true,
+      data: comments,
+    });
+  } catch (error) {
+    console.error("Get Comments Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 
