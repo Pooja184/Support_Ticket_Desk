@@ -177,3 +177,35 @@ export const getComments = async (req, res) => {
   }
 };
 
+
+export const getTicketById = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+
+    const ticket = await Ticket.findOne({
+      _id: id,
+      created_by: userId, // ensures user can only see own ticket
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: ticket,
+    });
+  } catch (error) {
+    console.error("Get Ticket By ID Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
