@@ -209,3 +209,98 @@ export const getTicketById = async (req, res) => {
 };
 
 
+
+
+export const getAllTickets = async (req, res) => {
+  try {
+    const { status, category, priority, search } = req.query;
+
+    const query = {};
+
+    if (status) query.status = status;
+    if (category) query.category = category;
+    if (priority) query.priority = priority;
+
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+
+    const tickets = await Ticket.find(query)
+      .populate("created_by", "name email")
+      .populate("assigned_to", "name email")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: tickets,
+    });
+  } catch (error) {
+    console.error("Get All Tickets Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
+const STATUS_FLOW = {
+  Open: ["In_progress"],
+  In_progress: ["Resolved"],
+  Resolved: ["Closed"],
+  Closed: [],
+};
+
+export const updateTicketStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id)
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        message: "Status is required",
+      });
+    }
+
+    const ticket = await Ticket.findById(id);
+
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+
+    const currentStatus = ticket.status;
+    const allowedNext = STATUS_FLOW[currentStatus];
+
+    if (!allowedNext.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid status transition from ${currentStatus} to ${status}`,
+      });
+    }
+
+    ticket.status = status;
+    await ticket.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Ticket status updated",
+      data: ticket,
+    });
+  } catch (error) {
+    console.error("Update Status Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
+
