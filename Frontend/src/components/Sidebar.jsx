@@ -36,8 +36,8 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation */}
-      <NavItem to="/dashboard/add-tickets" label="Add Tickets" />
-      <NavItem to="/dashboard/my-tickets" label="My Tickets" />
+      <NavItem to="add-tickets" label="Add Tickets" />
+      <NavItem to="my-tickets" label="My Tickets" />
 
       {/* Logout */}
       <div className="mt-auto">

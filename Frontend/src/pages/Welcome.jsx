@@ -30,7 +30,7 @@ function Welcome() {
 
         {/* Admin button */}
         <button
-          onClick={() => navigate("/login?role=admin")}
+          onClick={() => navigate("/admin-login")}
           className="w-full border border-black text-black py-3 rounded-md text-sm font-medium
                      hover:bg-black hover:text-white transition"
         >
