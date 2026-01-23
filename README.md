@@ -19,7 +19,19 @@ A full-stack **Support Ticket Management System** where users can raise support 
 - Update ticket status (Open → In Progress → Resolved → Closed)
 - Pagination on all tickets page
 
----
+## 🔐 Admin Access
+
+This application supports a single admin user.
+
+- The admin account is **pre-created and stored in the database**
+- Admin credentials are **not exposed in the codebase**
+- Admin login is handled using the same authentication flow as regular users
+- Admin role is identified using the `role: "admin"` field in the database
+
+> Note: Admin credentials can be updated directly in the database if required.
+### Admin credentials:
+- email: admin@gmail.com
+- password: admin123
 
 ## 🛠️ Tech Stack
 
@@ -59,12 +71,12 @@ git clone https://github.com/Pooja184/Support_Ticket_Desk.git
 - npm install
 
 ### Backend .env variables
-PORT=8000
-MONGODB_URL=mongodb+srv://poojabhambid2004:awdizBackendDB@cluster0.mdlcf.mongodb.net/ticketmanagertask
-JWT_SECRET=ticketmanager
-CLOUDINARY_CLOUD_NAME=dovcqwgxw
-CLOUDINARY_API_KEY=491827943659752
-CLOUDINARY_API_SECRET=u-UquIY2LRYZVa7RJvQiFsoPGIc
+- PORT=8000
+- MONGODB_URL=mongodb+srv://poojabhambid2004:awdizBackendDB@cluster0.mdlcf.mongodb.net/ticketmanagertask
+- JWT_SECRET=ticketmanager
+- CLOUDINARY_CLOUD_NAME=dovcqwgxw
+- CLOUDINARY_API_KEY=491827943659752
+- CLOUDINARY_API_SECRET=u-UquIY2LRYZVa7RJvQiFsoPGIc
 
 ### Start backend server:
 npm run server
