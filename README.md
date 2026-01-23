@@ -53,10 +53,10 @@ A full-stack **Support Ticket Management System** where users can raise support 
 ###  Clone the Repository
 git clone https://github.com/Pooja184/Support_Ticket_Desk.git
 
-###Backend setup:
+### Backend setup:
 
-cd Backend
-npm install
+- cd Backend
+- npm install
 
 ### Backend .env variables
 PORT=8000
@@ -71,8 +71,8 @@ npm run server
 
 ### Frontend setup:
 
-cd Frontend
-npm install
+- cd Frontend
+- npm install
 
 ### Frontend .env variables
 VITE_BACKEND_URL=https://support-ticket-desk-backend.onrender.com
