@@ -164,6 +164,10 @@ export const getComments = async (req, res) => {
       .populate("created_by", "name email")
       .sort({ createdAt: 1 });
 
+      if(!comments){
+        return res.status(404).json({success:false,message:"The specified ticket ID does not exist"})
+      }
+
     res.status(200).json({
       success: true,
       data: comments,
