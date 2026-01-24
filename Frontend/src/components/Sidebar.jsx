@@ -11,7 +11,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     try {
       await logout();
       toast.success("Logged out successfully");
-      navigate("/user-login");
+      navigate("/");
     } catch (error) {
       toast.error("Logout failed");
     }

@@ -11,7 +11,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     try {
       await logout();
       toast.success("Logged out successfully");
-      navigate("/admin-login");
+      navigate("/");
     } catch (error) {
       toast.error("Logout failed");
     }

@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   }
 
   if (!user) {
-    return <Navigate to="/user-login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return (
