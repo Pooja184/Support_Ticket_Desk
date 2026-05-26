@@ -19,20 +19,18 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
-      
-      {/* Mobile Header */}
+    <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row">
       <MobileHeader onMenuClick={() => setSidebarOpen(true)} />
 
-      {/* Admin Sidebar */}
       <AdminSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Main Content */}
-      <main className="flex-1 p-4 md:p-6">
-        <Outlet />
+      <main className="flex-1 overflow-x-hidden">
+        <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
