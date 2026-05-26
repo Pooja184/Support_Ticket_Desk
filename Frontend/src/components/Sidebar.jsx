@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       <aside
         className={`
-          fixed md:static top-0 left-0 h-screen w-64 bg-white border-r p-4
+          fixed md:static top-0 left-0 h-screen w-64 bg-gray-300 border-r p-4
           flex flex-col z-50 transform transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
@@ -43,13 +43,13 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* Profile Section with dynamic user name */}
-        <div className="flex items-center gap-3 mb-8 p-3 border rounded">
+        <div className="flex bg-gray-600 items-center gap-3 mb-8 p-3 border rounded">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white">
             <FiUser size={18} />
           </div>
 
           <div>
-            <p className="text-sm text-gray-600">Hello</p>
+            <p className="text-sm text-white">Hello</p>
             <p className="font-semibold text-black">
               {user?.name || "User"}
             </p>
