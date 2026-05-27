@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FiPaperclip, FiSend } from "react-icons/fi";
 import api from "../../api/axios";
 
 const AddTicket = () => {
@@ -16,60 +17,61 @@ const AddTicket = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setLoading(true);
 
     try {
-      // 1️ Create ticket
       const res = await api.post("/ticket/add-ticket", formData);
       const ticketId = res.data.data._id;
 
-      //  Upload attachment (optional)
       if (file) {
         const attachmentData = new FormData();
         attachmentData.append("file", file);
 
-        await api.post(
-          `/ticket/${ticketId}/attachments`,
-          attachmentData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        await api.post(`/ticket/${ticketId}/attachments`, attachmentData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
 
       toast.success("Ticket created successfully");
       navigate("/dashboard/my-tickets");
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to create ticket"
-      );
+      toast.error(error.response?.data?.message || "Failed to create ticket");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white border rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-6">
-        Create New Ticket
-      </h2>
+    <div className="mx-auto max-w-3xl space-y-5">
+      <section className="rounded-lg bg-slate-950 px-5 py-6 text-white shadow-sm sm:px-6">
+        <p className="text-sm font-medium text-cyan-200">New request</p>
+        <h1 className="mt-2 text-2xl font-semibold tracking-normal sm:text-3xl">
+          Create Support Ticket
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-slate-300">
+          Share the issue, choose the right category, and attach a file if it
+          helps the team understand what happened.
+        </p>
+      </section>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Title */}
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+      >
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-700">
             Title
           </label>
           <input
@@ -77,14 +79,14 @@ const AddTicket = () => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            placeholder="Briefly describe the issue"
             required
           />
         </div>
 
-        {/* Description */}
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-700">
             Description
           </label>
           <textarea
@@ -92,22 +94,22 @@ const AddTicket = () => {
             rows="4"
             value={formData.description}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full resize-y rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            placeholder="Add steps, expected behavior, screenshots, or any context that can help"
             required
           />
         </div>
 
-        {/* Category + Priority */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Category
             </label>
             <select
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
+              className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             >
               <option value="Bug">Bug</option>
               <option value="Feature">Feature</option>
@@ -117,14 +119,14 @@ const AddTicket = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Priority
             </label>
             <select
               name="priority"
               value={formData.priority}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
+              className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             >
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
@@ -133,26 +135,33 @@ const AddTicket = () => {
           </div>
         </div>
 
-        {/* Attachment */}
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-700">
             Attachment (optional)
           </label>
-          <input
-            type="file"
-            onChange={(e) => setFile(e.target.files[0])}
-            className="w-full text-sm"
-          />
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm text-slate-600 transition hover:border-slate-400 hover:bg-white">
+            <FiPaperclip size={18} />
+            <span className="min-w-0 truncate">
+              {file?.name || "Choose a file to attach"}
+            </span>
+            <input
+              type="file"
+              onChange={(event) => setFile(event.target.files[0])}
+              className="sr-only"
+            />
+          </label>
         </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-900 transition"
-        >
-          {loading ? "Creating..." : "Create Ticket"}
-        </button>
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={loading}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          >
+            <FiSend size={16} />
+            {loading ? "Creating..." : "Create Ticket"}
+          </button>
+        </div>
       </form>
     </div>
   );
