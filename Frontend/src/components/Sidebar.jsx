@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       await logout();
       toast.success("Logged out successfully");
       navigate("/");
-    } catch (error) {
+    } catch {
       toast.error("Logout failed");
     }
   };
