@@ -1,14 +1,12 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import Sidebar from "../../components/Sidebar";
 import MobileHeader from "../../components/MobileHeader";
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  console.log("Dashboard render", { user, loading });
 
   if (loading) {
     return null;
@@ -19,20 +17,18 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
-      
-      {/* Mobile Header */}
+    <div className="flex min-h-screen flex-col bg-slate-100 md:flex-row">
       <MobileHeader onMenuClick={() => setSidebarOpen(true)} />
 
-      {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Main Content */}
-      <main className="flex-1 p-4 md:p-6">
-        <Outlet />
+      <main className="flex-1 overflow-x-hidden">
+        <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
